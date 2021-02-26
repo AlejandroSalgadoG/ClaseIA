@@ -2,7 +2,7 @@ import numpy as np
 from itertools import product
 
 def distance(x, y):
-    return np.linalg.norm(x-y)
+    return np.linalg.norm(np.subtract(x, y))
 
 def density_function( x, v, param ):
     return np.exp( - distance( x, v ) / ( 2 * param**2 ) )
