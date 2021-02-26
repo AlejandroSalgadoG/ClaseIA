@@ -34,7 +34,7 @@ def mountain(X, num_clusters=2, num_divisions=1, sigma=0.1, beta=0.1):
     M = calculate_mountain( X, V, sigma )
     C = []
     for i in range(num_clusters):
-        c = select_first_center( V, M )
+        c = select_first_center(M, V)
         M = update_mountain(X, V, M, c, sigma, beta)
         C.append( c )
     return C
