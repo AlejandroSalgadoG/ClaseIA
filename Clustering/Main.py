@@ -1,4 +1,6 @@
 from Data import X
 from Kmeans import kmeans
+from Mountain import mountain
 
-kmeans( X )
+#kmeans( X )
+mountain( X )
