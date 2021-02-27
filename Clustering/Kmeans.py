@@ -6,30 +6,28 @@ def distance(x, y):
 def select_centers( n, num_c ):
     return np.random.choice( n, size=num_c, replace=False )
 
-def calc_membership(X, C):
-    M = { i: [] for i,_ in enumerate(C) }
-    for i,x in enumerate( X ):
-        c_sel = np.argmin( [ distance( x, c ) for c in C ] )
-        M[ c_sel ].append( i )
-    return M
+def calc_dist_matrix( X, C ):
+    return np.array([ [ distance( x, c ) for c in C ] for x in X ])
 
-def cost_function(X, C, M):
-    cost = 0
-    for i,c in enumerate(C):
-        for j in M[i]: 
-            cost += distance( c, X[j] )
-    return cost
+def calc_membership(D):
+    return np.argmin( D, axis=1 )
+
+def cost_function(D, M):
+    I = np.arange( len(D) )
+    return np.sum( D[I, M] )
 
 def update_centers(X, C, M):
     for i,_ in enumerate(C):
-        C[i] = np.sum( X[ M[i] ], axis=0 ) / len(M[i])
+        X_c = X[ M == i ]
+        C[i] = np.sum( X_c, axis=0 ) / len( X_c )
     return C
 
-def kmeans( X, num_c=2, ite=10 ):
-    n,m = X.shape
+def kmeans( X, num_c=2, iters=1 ):
+    n,_ = X.shape
     C = X[ select_centers( n, num_c ) ]
-    for i in range(ite):
-        M = calc_membership( X, C )
-        cost = cost_function( X, C, M )
+    for ite in range(iters):
+        D = calc_dist_matrix( X, C )
+        M = calc_membership( D )
+        print( cost_function( D, M ) )
         C = update_centers( X, C, M )
     return C, M
