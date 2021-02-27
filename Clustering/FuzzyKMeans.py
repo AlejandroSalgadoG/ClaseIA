@@ -16,7 +16,7 @@ def calculate_centers(X, Um):
 def calculate_distances( X, C ):
     return np.array( [ [ distance( x, c ) for x in X ] for c in C ] )
         
-def cost_function( D, Um ):
+def cost_function( Um, D ):
     return np.sum( Um * D**2 )
 
 def update_membership( D, m ):
@@ -29,6 +29,6 @@ def fuzzy_kmeans(X, m=2, num_c=2, iters=1):
         Um = U ** m
         C = calculate_centers( X, Um )
         D = calculate_distances( X, C )
-        cost = cost_function( Um, D )
+        print( cost_function( Um, D ) )
         U = update_membership( D, m )
     return C, U

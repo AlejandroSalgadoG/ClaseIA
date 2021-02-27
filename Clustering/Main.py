@@ -4,7 +4,7 @@ from FuzzyKMeans import fuzzy_kmeans
 from Mountain import mountain
 from Substractive import substract
 
-C, M = kmeans( X )
-#fuzzy_kmeans( X )
+#C, M = kmeans( X )
+C, U = fuzzy_kmeans( X, iters=10 )
 #mountain( X , num_divisions=5)
 #substract( X , num_divisions=5)
