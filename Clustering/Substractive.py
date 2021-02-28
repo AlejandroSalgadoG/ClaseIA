@@ -29,6 +29,9 @@ def substract(X, num_clusters=2, num_divisions=1, ra=1.0, rb=None):
     C = []
     for i in range(num_clusters):
         c = select_first_center(M, X)
+        print(f"i -> {i}")
+        print(M)
         M = update_substraction(X, M, c, rb)
         C.append( c )
+    print(M)
     return C
