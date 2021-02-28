@@ -27,12 +27,18 @@ class Cluster:
         return Cluster(new_X)         
 
 def select_clusters_to_join(distance_matrix):
-    return np.unravel_index(distance_matrix.argmin(), distance_matrix.shape)
+    masked_distance = distance_matrix.copy()
+    np.fill_diagonal(masked_distance, np.inf)
+    return np.unravel_index(masked_distance.argmin(), masked_distance.shape)
 
 def join_clusters(clusters, i, j):
     new_cluster = clusters[i].join(clusters[j])
-    clusters.pop(i)
-    clusters.pop(j)
+    if i < j:
+        clusters.pop(j)
+        clusters.pop(i)
+    else:
+        clusters.pop(i)
+        clusters.pop(j)
     clusters.append(new_cluster)
     return clusters
 
@@ -60,7 +66,7 @@ def agglomerative(X, num_clusters=2):
     clusters = [ Cluster(X[[i]]) for i in range(n)]
     distance_clusters = calc_distance_clusters(clusters)
     linkages = []
-    while len(clusters) >= 2:
+    while len(clusters) > num_clusters:
         i, j = select_clusters_to_join(distance_clusters)
         linkages.append([i, j])
         clusters = join_clusters(clusters, i, j)
