@@ -5,7 +5,7 @@ def distance(x, y):
     return np.linalg.norm( np.subtract( x, y ) )
 
 def density_function( v, x, param ):
-    return np.exp( - distance( v, x ) / ( 2 * param**2 ) )
+    return np.exp( - distance( v, x ) ** 2 / ( 2 * param**2 ) )
 
 def mountain_function( X, v, sigma ):
     return np.sum( [ density_function( v, x, sigma ) for x in X ] )

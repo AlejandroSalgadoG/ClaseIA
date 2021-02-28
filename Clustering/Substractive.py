@@ -5,7 +5,7 @@ def distance(x, y):
     return np.linalg.norm(np.subtract(x, y))
 
 def density_function( x, v, denominator ):
-    return np.exp( - distance( x, v ) / denominator )
+    return np.exp( - distance( x, v ) ** 2 / denominator )
 
 def substraction_function( X, v, denominator):
     return np.sum( [ density_function( x, v, denominator) for x in X ] )
