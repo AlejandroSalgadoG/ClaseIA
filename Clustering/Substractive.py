@@ -22,6 +22,12 @@ def update_substraction( X, M, c, rb):
         M[i] -= M_c * density_function( X[i], c, denominator=(rb/2)**2  )
     return M
 
+def calculate_dist_matrix( X, C ):
+    return np.array([ [ distance( x, c ) for c in C ] for x in X ])
+
+def calculate_membership( D ):
+    return np.argmin( D, axis=1 )
+
 def substract(X, num_clusters=2, num_divisions=1, ra=1.0, rb=None):
     if not rb:
         rb = 1.5 * ra
@@ -31,4 +37,6 @@ def substract(X, num_clusters=2, num_divisions=1, ra=1.0, rb=None):
         c = select_first_center(M, X)
         M = update_substraction(X, M, c, rb)
         C.append( c )
-    return C
+    D = calculate_dist_matrix( X, C )
+    M = calculate_membership( D )
+    return np.array(C), M
