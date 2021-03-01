@@ -25,6 +25,12 @@ def update_mountain( V, M, mc, c, sigma, beta ):
     for i,_ in enumerate(M): M[i] -= mc * density_function( V[i], c, beta )
     return M
 
+def calculate_dist_matrix( X, C ):
+    return np.array([ [ distance( x, c ) for c in C ] for x in X ])
+
+def calculate_membership( D ):
+    return np.argmin( D, axis=1 )
+
 def mountain(X, num_clusters=2, num_divisions=1, sigma=0.1, beta=0.1):
     V = create_grid( X, num_divisions )
     M = calculate_mountain( X, V, sigma )
@@ -33,4 +39,6 @@ def mountain(X, num_clusters=2, num_divisions=1, sigma=0.1, beta=0.1):
         c, mc = select_center(M, V)
         M = update_mountain(V, M, mc, c, sigma, beta)
         C.append( c )
-    return np.array(C)
+    D = calculate_dist_matrix( X, C )
+    M = calculate_membership( D )
+    return np.array(C), M

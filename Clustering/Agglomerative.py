@@ -71,4 +71,4 @@ def agglomerative(X, num_clusters=2):
         linkages.append([i, j])
         clusters = join_clusters(clusters, i, j)
         distance_clusters = update_clusters_distances(i, j, distance_clusters, clusters)
-    return [cluster.points for cluster in clusters]
+    return np.array( [cluster.points for cluster in clusters] )
