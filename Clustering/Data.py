@@ -4,7 +4,7 @@ from sklearn.manifold import TSNE
 
 from PlotResults import plot_data2d, plot_data3d
 
-img = matimg.imread("MNM_small.jpg").astype(int)
+img = matimg.imread("images/MNM_small.jpg").astype(int)
 img_n, img_m,_ = img.shape
 X = img.reshape( img_n*img_m, 3 )
 

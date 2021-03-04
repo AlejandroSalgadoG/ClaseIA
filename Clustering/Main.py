@@ -9,10 +9,10 @@ from Agglomerative import agglomerative
 from Utils import *
 from PlotResults import *
 
-#C, M = kmeans( X, num_c=7, iters=10 )
-#plot_result2d( X, M, C )
-#plot_result3d( X, M, C )
-#plot_as_img( img_n, img_m, X, M )
+C, M = kmeans( X, num_c=7, iters=10 )
+plot_result2d( X, M, C )
+plot_result3d( X, M, C )
+plot_as_img( img_n, img_m, X, M )
 
 #C, U = fuzzy_kmeans( X, num_c=7, iters=10 )
 #M, Umax = fuzzy_to_membership( U )
@@ -32,7 +32,7 @@ from PlotResults import *
 #plot_result3d( X, M, C )
 #plot_as_img( img_n, img_m, X, M )
 
-M = agglomerative(X, num_clusters=7 )
-plot_result2d( X, M )
-plot_result3d( X, M )
-plot_as_img( img_n, img_m, X, M )
+#M = agglomerative(X, num_clusters=7 )
+#plot_result2d( X, M )
+#plot_result3d( X, M )
+#plot_as_img( img_n, img_m, X, M )
