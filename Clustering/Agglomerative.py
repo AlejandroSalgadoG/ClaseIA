@@ -87,4 +87,4 @@ def agglomerative(X, num_clusters=2):
     for num_cluster, cluster in enumerate(clusters):
         indexes_clt = cluster.indexes
         labels[indexes_clt] = num_cluster
-    return labels.T
+    return labels.flatten()

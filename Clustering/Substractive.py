@@ -37,6 +37,4 @@ def substract(X, num_clusters=2, num_divisions=1, ra=1.0, rb=None):
         c = select_first_center(M, X)
         M = update_substraction(X, M, c, rb)
         C.append( c )
-    D = calculate_dist_matrix( X, C )
-    M = calculate_membership( D )
-    return np.array(C), M
+    return np.array(C)

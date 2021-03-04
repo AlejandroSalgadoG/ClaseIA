@@ -1,19 +1,21 @@
 import numpy as np
 
-colors = np.array([
-            [31, 119, 180, 255],
-            [255, 127, 14, 255],
-            [44, 160, 44, 255],
-            [214, 39, 40, 255],
-            [148, 103, 189, 255],
-            [140, 86, 75, 255],
-            [227, 119, 194, 255],
-            [127, 127, 127, 255],
-            [188, 189, 34, 255],
-            [23, 190, 207, 255]
-         ]) / 255
+colors = [
+           [31, 119, 180],
+           [255, 127, 14],
+           [44, 160, 44],
+           [214, 39, 40],
+           [148, 103, 189],
+           [140, 86, 75],
+           [227, 119, 194],
+           [127, 127, 127],
+           [188, 189, 34],
+           [23, 190, 207]
+         ]
 
-def get_color( i, alpha=None ):
-    color = colors[ i % 10 ].copy()
-    if alpha is not None: color[-1] = alpha
-    return color
+def get_plt_color( i, alpha=1 ):
+    color = colors[ i % 10 ]
+    return [ c / 255 for c in color ] + [alpha]
+
+def get_color( i ):
+    return colors[ i % 10 ]

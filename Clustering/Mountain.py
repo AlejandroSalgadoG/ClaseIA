@@ -39,6 +39,4 @@ def mountain(X, num_clusters=2, num_divisions=1, sigma=0.1, beta=0.1):
         c, mc = select_center(M, V)
         M = update_mountain(V, M, mc, c, sigma, beta)
         C.append( c )
-    D = calculate_dist_matrix( X, C )
-    M = calculate_membership( D )
-    return np.array(C), M
+    return np.array(C)
