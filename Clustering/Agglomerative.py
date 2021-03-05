@@ -72,12 +72,12 @@ def update_clusters_distances(i, j, distance_clusters, clusters):
     return new_distances
 
 
-def agglomerative(X, num_clusters=2):
+def agglomerative(X, num_c=2):
     n = len(X)
     clusters = [Cluster(X[[i]], [i]) for i in range(n)]
     distance_clusters = calc_distance_clusters(clusters)
     linkages = []
-    while len(clusters) > num_clusters:
+    while len(clusters) > num_c:
         i, j = select_clusters_to_join(distance_clusters)
         linkages.append([i, j])
         clusters = join_clusters(clusters, i, j)
