@@ -1,13 +1,11 @@
 import numpy as np
 
-def distance(x, y):
-    return np.linalg.norm(x-y)
 
 def select_centers( n, num_c ):
     return np.random.choice( n, size=num_c, replace=False )
 
-def calc_dist_matrix( X, C ):
-    return np.array([ [ distance( x, c ) for c in C ] for x in X ])
+def calc_dist_matrix( X, C, distance_func):
+    return np.array([ [ distance_func( x, c ) for c in C ] for x in X ])
 
 def calc_membership(D):
     return np.argmin( D, axis=1 )
@@ -22,12 +20,12 @@ def update_centers(X, C, M):
         C[i] = np.sum( X_c, axis=0 ) / len( X_c )
     return C
 
-def kmeans( X, num_c=2, iters=1 ):
+def kmeans( X, distance_func, num_c=2, iters=1):
     n,_ = X.shape
     C = X[ select_centers( n, num_c ) ]
     for ite in range(iters):
-        D = calc_dist_matrix( X, C )
+        D = calc_dist_matrix( X, C, distance_func)
         M = calc_membership( D )
-        print( cost_function( D, M ) )
+        # print( cost_function( D, M ) )
         C = update_centers( X, C, M )
     return C, M

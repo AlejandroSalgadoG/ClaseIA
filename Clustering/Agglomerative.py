@@ -5,12 +5,12 @@ def distance(x, y):
     return np.linalg.norm(np.subtract(x, y))
 
 
-def calc_distance_clusters(clusters):
+def calc_distance_clusters(clusters, distance_func):
     n = len(clusters)
     distances = np.zeros([n, n])
     for i in range(n):
         for j in range(i):
-            dij = clusters[i].distance(clusters[j])
+            dij = clusters[i].distance(clusters[j], distance_func)
             distances[i, j] = dij
             distances[j, i] = dij
     return distances
@@ -23,8 +23,8 @@ class Cluster:
         self.center = np.mean(X, axis=0)
         self.indexes = indexes
 
-    def distance(self, other_cluster):
-        return distance(self.center, other_cluster.center)
+    def distance(self, other_cluster, distance_func):
+        return distance_func(self.center, other_cluster.center)
 
     def join(self, other_cluster):
         new_X = np.vstack([self.points, other_cluster.points])
@@ -50,7 +50,7 @@ def join_clusters(clusters, i, j):
     return clusters
 
 
-def update_clusters_distances(i, j, distance_clusters, clusters):
+def update_clusters_distances(i, j, distance_clusters, clusters, distance_func):
     assert i != j
     # Delete rows-cols representing distances to clusters i and j
     n = len(distance_clusters)
@@ -62,7 +62,7 @@ def update_clusters_distances(i, j, distance_clusters, clusters):
     # to the others
     new_cluster = clusters[-1]
     last_cluster_dists = [
-        new_cluster.distance(o_cluster) for o_cluster in clusters[:-1]
+        new_cluster.distance(o_cluster, distance_func) for o_cluster in clusters[:-1]
     ]
     # Add new col
     col_to_concat = np.array([last_cluster_dists]).T
@@ -72,16 +72,16 @@ def update_clusters_distances(i, j, distance_clusters, clusters):
     return new_distances
 
 
-def agglomerative(X, num_c=2):
+def agglomerative(X, distance_func, num_c=2):
     n = len(X)
     clusters = [Cluster(X[[i]], [i]) for i in range(n)]
-    distance_clusters = calc_distance_clusters(clusters)
+    distance_clusters = calc_distance_clusters(clusters, distance_func)
     linkages = []
     while len(clusters) > num_c:
         i, j = select_clusters_to_join(distance_clusters)
         linkages.append([i, j])
         clusters = join_clusters(clusters, i, j)
-        distance_clusters = update_clusters_distances(i, j, distance_clusters, clusters)
+        distance_clusters = update_clusters_distances(i, j, distance_clusters, clusters, distance_func)
     # Get labels of data original order
     labels = np.zeros((n, 1), dtype=int)
     for num_cluster, cluster in enumerate(clusters):
