@@ -12,3 +12,9 @@ def calculate_membership( X, C ):
 
 def fuzzy_to_membership( U ):
     return np.argmax( U, axis=0 ), np.max( U, axis=0 )
+
+def calculate_center( X, M ):
+    return np.array([ X[ M == m ].mean( axis=0 ) for m in np.unique(M) ] )
+
+def rescale_array( X, min_val, max_val ):
+    return np.vstack( [ np.interp(x, [x.min(), x.max()], [min_val, max_val]) for x in X.T ] ).T

@@ -13,6 +13,9 @@ colors = [
            [23, 190, 207]
          ]
 
+def to_plt_color( color, alpha=1 ):
+    return [ c / 255 for c in color ] + [alpha]
+
 def get_plt_color( i, alpha=1 ):
     color = colors[ i % 10 ]
     return [ c / 255 for c in color ] + [alpha]
