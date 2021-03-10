@@ -20,12 +20,12 @@ def update_centers(X, C, M):
         C[i] = np.sum( X_c, axis=0 ) / len( X_c )
     return C
 
-def kmeans( X, distance_func, num_c=2, iters=1):
+def kmeans( X, distance_func, num_c=2, iters=1, print_error=True):
     n,_ = X.shape
     C = X[ select_centers( n, num_c ) ]
     for ite in range(iters):
         D = calc_dist_matrix( X, C, distance_func)
         M = calc_membership( D )
-        # print( cost_function( D, M ) )
+        if print_error: print( cost_function( D, M ) )
         C = update_centers( X, C, M )
     return C, M
