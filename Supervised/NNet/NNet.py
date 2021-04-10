@@ -1,7 +1,7 @@
 import numpy as np
 
 # Ejemplo de una red neuronal simple
-# https://matthewmazur.files.wordpress.com/2015/03/nn-calculation.png?w=525
+# https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
 
 def add_bias(x):
     ans = np.append(x,1) # agregar el bias al vector de entrada
@@ -159,4 +159,7 @@ class NNet:
             # sin la ultima posicion). Las transpuestas son para que la operacion matricial sea valida y el vector resultante sea de dimension
             # 1xN como el primer vector de error
 
-        return updates
+        return error, weights-updates # retorna el error calculado y los pesos actualizados
+
+    def init_random_weights(self, low=0, high=1):
+        return np.array([ np.random.uniform( low, high, size=(self.arch[i]+1, self.arch[i+1]) ) for i in range(self.n_layers) ])
