@@ -3,8 +3,36 @@ import numpy as np
 # Ejemplo de una red neuronal simple
 # https://matthewmazur.files.wordpress.com/2015/03/nn-calculation.png?w=525
 
-from Functions import sigmoid, d_sigmoid, mse, d_mse, add_bias # importar las funciones con sus respectivas derivadas
-                                                               # add_bias esta explicado en el archivo de funciones
+def add_bias(x):
+    ans = np.append(x,1) # agregar el bias al vector de entrada
+    return np.expand_dims(ans, 0) # esta linea es por una cosa tecnica de numpy,
+                                  # para esa libreria, un arreglo no es un vector
+                                  # propiamente. Es solo una lista de cosas, y su
+                                  # shape es (n,), entonces si quieres hacer
+                                  # operaciones matriciales, es recomendable que
+                                  # lo combiertas a vector, en numpy es agregarle
+                                  # una dimension, y eso es lo que hace esta
+                                  # linea, añade la dimension que falta para que
+                                  # el arreglo se pueda ver como un vector con
+                                  # dimension (n,1)
+    # Esta misma operacion se tiene que realizar en todas las funciones de
+    # derivada para que el metodo que hace el backward pueda hacer las operaciones
+    # de matrices bien.
+
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+
+def d_sigmoid(x):
+    ans = x*(1-x)
+    return np.expand_dims(ans, 0)  
+
+def mse(y, y_bar):
+    return np.sum((y-y_bar)**2/2)
+
+def d_mse(y, y_bar):
+    ans = y_bar-y
+    return np.expand_dims(ans, 0)
+
 class NNet:
     # Este es el constructor de la clase, recibe una lista que contenga el numero
     # de neuronas que se quieren en cada capa sin tener en cuenta el bias.
