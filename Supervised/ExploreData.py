@@ -1,7 +1,9 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import matplotlib.pyplot as plt
 from sklearn.datasets import load_breast_cancer
+from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 
 # radius (mean of distances from center to points on the perimeter)
 # texture (standard deviation of gray-scale values)
@@ -54,14 +56,29 @@ dataset = load_breast_cancer( as_frame=True )
 x = dataset["data"]
 y = dataset["target"]
 
-corr = x.corr()
-fig, ax = plt.subplots()
-sns.heatmap(corr, vmax=1, center=0, linewidths=.5, square=True, cbar_kws={"shrink": .5} )
+# corr = x.corr()
+# fig, ax = plt.subplots()
+# sns.heatmap(corr, vmax=1, center=0, linewidths=.5, square=True, cbar_kws={"shrink": .5} )
 
-ax.set_xticks( np.arange(30) + 0.5 )
-ax.set_yticks( np.arange(30) + 0.5 )
-ax.set_xticklabels( x.columns )
-ax.set_yticklabels( x.columns )
+# ax.set_xticks( np.arange(30) + 0.5 )
+# ax.set_yticks( np.arange(30) + 0.5 )
+# ax.set_xticklabels( x.columns )
+# ax.set_yticklabels( x.columns )
 
-plt.tight_layout()
-plt.show()
+# plt.tight_layout()
+# plt.show()
+
+def plot_data3d(x, y, title=""):
+    ax = plt.axes(projection='3d')
+    ax.scatter3D(x[:, 0], x[:, 1], x[:, 2], c=y, cmap='viridis')
+    if title:
+        plt.title(title)
+    plt.show()
+
+x_pca = PCA(n_components=3).fit_transform(x)
+plot_data3d(x_pca, y, "PCA")
+
+
+x_embedded = TSNE(n_components=3, init="pca").fit_transform(x)
+plot_data3d(x_embedded, y, "TSNE")
+
