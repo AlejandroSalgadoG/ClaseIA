@@ -68,17 +68,26 @@ y = dataset["target"]
 # plt.tight_layout()
 # plt.show()
 
-def plot_data3d(x, y, title=""):
+def plot_data3d(x, y, title="", axis_names = []):
     ax = plt.axes(projection='3d')
     ax.scatter3D(x[:, 0], x[:, 1], x[:, 2], c=y, cmap='viridis')
     if title:
         plt.title(title)
+    if axis_names:
+        ax.set_xlabel(axis_names[0])
+        ax.set_ylabel(axis_names[1])
+        ax.set_zlabel(axis_names[2])
     plt.show()
 
-x_pca = PCA(n_components=3).fit_transform(x)
-plot_data3d(x_pca, y, "PCA")
+sub_x = x[['mean area', 'mean texture', 'mean area']]
+plot_data3d(sub_x.values, y, "Features subset", ['mean area', 'mean texture', 'mean area'])
 
+# x_pca = PCA(n_components=3).fit_transform(x)
+# plot_data3d(x_pca, y, "PCA")
+# plt.savefig("imgs/pca.png")
 
-x_embedded = TSNE(n_components=3, init="pca").fit_transform(x)
-plot_data3d(x_embedded, y, "TSNE")
+# x_embedded = TSNE(n_components=3, init="pca").fit_transform(x)
+# plot_data3d(x_embedded, y, "TSNE")
+# plt.savefig("imgs/tsne.png")
+
 
