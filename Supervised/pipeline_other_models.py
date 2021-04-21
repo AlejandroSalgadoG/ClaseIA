@@ -9,10 +9,18 @@ from sklearn.svm import SVC
 from sklearn.base import clone
 from sklearn.manifold import TSNE
 from utils import *
-import random
 
 
-random.seed(1616514654156435)
+def normalize( x ):
+    return (x - x.mean()) / x.std()
+
+def latex_with_lines(df, *args, **kwargs):
+    kwargs['column_format'] = '|'.join([''] + ['l'] * df.index.nlevels
+                                            + ['r'] * df.shape[1] + [''])
+    res = df.to_latex(*args, **kwargs)
+    return res.replace('\\\\\n', '\\\\ \\midrule\n')
+
+np.random.seed(1234567)
 # Parametros SVC
 # kernel
 # 'linear'
@@ -21,38 +29,39 @@ random.seed(1616514654156435)
 
 # Definición datos
 dataset = load_breast_cancer( as_frame=True )
-x = dataset["data"].values
-x = (x - x.mean()) / x.std()
-y = dataset["target"]
+x,y = dataset["data"], dataset["target"]
+# x = TSNE(n_components=3, init="pca").fit_transform(x)
+x,y = normalize( x ), y #classes2binary( y.values )
+x_train, x_test, y_train, y_test = train_test_split( x, y, test_size=0.3, shuffle=True )
 
-# Separación train, validation y test
-x_train, x_val_test, y_train, y_val_test = train_test_split( x, y, test_size=0.4, shuffle=True)
-x_val, x_test, y_val, y_test = train_test_split( x_val_test, y_val_test, test_size=0.5, shuffle=True)
 
 
 models = [LR(), SVC(kernel="rbf", gamma="scale"), SVC(kernel="linear"),
         SVC(kernel="poly"), DecisionTreeClassifier()]
 models_names = ["LR", "SVC radial", "SVC linear", "SVC Polynomial", "Tree"]
 models_metrics_train = {}
-models_metrics_val = {}
+models_metrics_test = {}
 for name, model in zip(models_names, models):
     # Entrenar el modelo con los datos en altas dimensiones
     model.fit(x_train, y_train)
 
-    # Entrenar el modelo con los datos en dimensiones reducidas
-    # tsne =  TSNE(n_components=3, init="pca").fit(x_train)
-    # x_train_embedded = tsne.transform(x_train)
-    # reduced_model = clone(model)
-    # reduced_model.fit(x_train_embedded, y_train)
-
-
     # Realizar la comparación del modelo del paso 8 contra el modelo del paso
     y_train_pred = model.predict(x_train)
-    models_metrics_train[name] = get_metrics(y_train, y_train_pred)
-    y_val_pred = model.predict(x_val)
-    models_metrics_val[name] = get_metrics(y_val, y_val_pred)
+    y_test_pred = model.predict(x_test)
+    if hasattr(model, 'predict_proba'):
+        y_prob_train = model.predict_proba(x_train)[:, 1]
+        y_prob_test = model.predict_proba(x_test)[:, 1]
+    else:
+        y_prob_train = None
+        y_prob_test = None
+        print(f"{name} tiene predict proba ")
+    models_metrics_train[name] = get_metrics(y_train, y_train_pred, y_prob_train)
+    models_metrics_test[name] = get_metrics(y_test, y_test_pred, y_prob_test)
 
 print("-------- Train ---------")
 print(pd.DataFrame(models_metrics_train))
 print("-------- Valid ---------")
-print(pd.DataFrame(models_metrics_val))
+print(pd.DataFrame(models_metrics_test))
+
+latex_repr = latex_with_lines(pd.DataFrame(models_metrics_test).T)
+print(latex_repr)

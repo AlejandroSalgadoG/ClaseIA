@@ -8,7 +8,7 @@ def get_metrics(y_true, y_hat, y_proba=None):
     metrics["accuracy"] = (tn + tp) / n
     metrics["sensitivity"] = tn / (tn + fp)
     metrics["specificity"] = tp / (tp + fn)
-    if y_proba:
+    if y_proba is not None:
         metrics["roc-auc"] = mt.roc_auc_score(y_true, y_proba)
     else:
         metrics["roc-auc"] = np.nan
