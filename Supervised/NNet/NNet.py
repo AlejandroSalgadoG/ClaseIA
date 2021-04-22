@@ -38,8 +38,9 @@ class NNet:
     # de neuronas que se quieren en cada capa sin tener en cuenta el bias.
     # Es decir, para una red que tenga 3 entradas, 2 capas ocultas con 5 y 4
     # neuronas respectivamente y 1 sola salida, arch tendria que ser [3, 5, 4, 1]
-    def __init__(self, arch):
+    def __init__(self, arch, bias=True):
         self.arch = arch
+        self.bias = bias
         self.n_layers = len(arch)-1 # se le tiene que restar 1 porque las listas
                                     # empiezan en 0, entonces si la red neuronal
                                     # tiene entrada, 2 capas y salida, la lista
@@ -69,7 +70,8 @@ class NNet:
 
     def predict(self, data, weights):
         for layer in range( self.n_layers ): # por cada capa (0,1,2,...)
-            data = np.append(data, 1) # agrega el bias a la entrada de la capa
+            if self.bias:
+                data = np.append(data, 1) # agrega el bias a la entrada de la capa
             w_data = np.matmul(data, weights[layer]) # pondera las entradas por los pesos respectivos
             data = sigmoid(w_data) # y en cada neurona de la capa siguiente aplica una funcion sigmoide
         return data # retorna la salida de la red
@@ -82,7 +84,8 @@ class NNet:
         inter_data = [] # aqui se va a guardar la salida de cada capa
         for layer in range( self.n_layers ):
             inter_data.append(data) # guarda la salida de las capas, (la primera posicion va a ser la entrada de la red como tal)
-            data = np.append(data, 1) # hace lo mismo del metodo anterior
+            if self.bias:
+                data = np.append(data, 1) # hace lo mismo del metodo anterior
             w_data = np.matmul(data, weights[layer])
             data = sigmoid(w_data)
         inter_data.append(data) # guarda la salida final de la red
@@ -116,9 +119,10 @@ class NNet:
             d_out = d_sigmoid(inter_data[b_layer]) # Se calcula la derivada de lo que salio de la neura con respecto a lo que entro
                                                    # es decir dO/dH, que es d/dH 1/(1-e^-H) y da O-(1-O), esto da una matriz de
                                                    # 1xN.
-
-            d_in = add_bias(inter_data[b_layer-1]) # Aqui se agrega el bias a la salida de la capa anterior (por eso b_layer-1)
-
+            if self.bias:
+                d_in = add_bias(inter_data[b_layer-1]) # Aqui se agrega el bias a la salida de la capa anterior (por eso b_layer-1)
+            else:
+                d_in = np.expand_dims(inter_data[b_layer-1], 0)
             d_w = np.matmul(d_in.T, d_error*d_out) # ahora se calcula la derivada del error con respecto a lo que le entro a las
                                                    # neuronas, es decir dE/dH como dE/dO * dO/dH, como es lo que entro a la
                                                    # neurona, no importan las neuronas que existan en la capa anterior, simplemente
@@ -163,4 +167,6 @@ class NNet:
         return error, new_weights # retorna el error calculado y los pesos actualizados
 
     def init_random_weights(self, low=0, high=1):
-        return [ np.random.uniform( low, high, size=(self.arch[i]+1, self.arch[i+1]) ) for i in range(self.n_layers) ]
+        print("Dimensiones matrices")
+        print([(self.arch[i]+int(self.bias), self.arch[i+1]) for i in range(self.n_layers)])
+        return [ np.random.uniform( low, high, size=(self.arch[i]+int(self.bias), self.arch[i+1]) ) for i in range(self.n_layers) ]

@@ -53,7 +53,7 @@ arch = [30, 20, 15, 2]
 eta = 0.2
 batch_size = 100
 
-nnet = NNet(arch)
+nnet = NNet(arch,bias=True)
 weights = nnet.init_random_weights()
 
 errors = np.zeros(batch_size)
