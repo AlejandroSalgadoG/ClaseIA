@@ -14,8 +14,10 @@ x,y = normalize( x.values ), classes2binary( y.values )
 x_train, x_test, y_train, y_test = train_test_split( x, y, test_size=0.3, shuffle=True )
 nnet, weights = train( epoch=500, tol=1e-2, arch=[30, 20, 2], eta=0.5, x=x_train, y=y_train )
 
-y_pred = predict( nnet, weights, x_test )
+y_hat = predict( nnet, weights, x_test )
+y_pred = binary2class( hard_classification( y_hat ) )
 y_true = binary2class( y_test )
+
 conf_matrix = confusion_matrix( y_true, y_pred )
 tn, fp, fn, tp = conf_matrix.ravel()
 

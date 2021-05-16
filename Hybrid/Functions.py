@@ -18,8 +18,11 @@ def d_mse(y, y_bar):
     ans = y_bar-y
     return np.expand_dims(ans, 0)
 
-def normalize( x ):
+def standardize( x ):
     return (x - x.mean(axis=0)) / x.std(axis=0)
+
+def normalize( x ):
+    return (x - x.min(axis=0)) / (x.max(axis=0) - x.min(axis=0))
 
 def classes2binary( y ):
     classes = np.unique(y)
@@ -39,10 +42,7 @@ def hard_classification( y_hat, threshold=0.5 ):
     return y_hard
 
 def predict( nnet, weights, x ):
-    y_hat = np.array( [ nnet.predict(input_data, weights) for input_data in x ] )
-    y_hard = hard_classification( y_hat, threshold=0.5 )
-    y_pred = binary2class( y_hard )
-    return y_pred
+    return np.array( [ nnet.predict(input_data, weights) for input_data in x ] )
 
 def get_batch(x, y, batch_size):
     idx = np.random.choice( np.arange(batch_size), size=batch_size, replace=False )

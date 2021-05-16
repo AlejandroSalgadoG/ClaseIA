@@ -35,7 +35,7 @@ class NNet:
             d_w = np.matmul(d_in.T, d_error*d_out)
             updates[b_layer-1] = d_w
             d_error = np.matmul(weights[b_layer-1][:-1], (d_error*d_out).T).T
-        new_weights = [ weight - update*eta for weight, update in zip( weights, updates ) ] # Realiza la actualizacion de pesos
+        new_weights = [ weight - update*eta for weight, update in zip( weights, updates ) ]
         return error, new_weights
 
     def init_random_weights(self, low=0, high=1):
@@ -49,8 +49,7 @@ def train( epoch, tol, arch, eta, x, y, batch_size=100 ):
     nnet = NNet(arch)
     weights = nnet.init_random_weights()
 
-    n = x.shape[0]
-    errors = np.zeros(n)
+    errors = np.zeros( x.shape[0] )
 
     for i in range( epoch ):
         batch_x, batch_y = get_batch( x, y, batch_size )
