@@ -41,16 +41,20 @@ class NNet:
     def init_random_weights(self, low=0, high=1):
         return [ np.random.uniform( low, high, size=(self.arch[i]+1, self.arch[i+1]) ) for i in range(self.n_layers) ]
 
-def train( epoch, tol, arch, eta, x, y, batch_size=100 ):
-    print("arch", arch)
+class Autoencoder(NNet):
+    def encode(self, data, weights):
+        for layer in range( self.n_layers-1 ):
+            data = np.append(data, 1)
+            w_data = np.matmul(data, weights[layer])
+            data = sigmoid(w_data)
+        return data
+
+def train( nnet, epoch, tol, eta, x, y, batch_size=100 ):
+    print("arch", nnet.arch)
     print("eta", eta)
     print("batch", batch_size)
-
-    nnet = NNet(arch)
     weights = nnet.init_random_weights()
-
     errors = np.zeros( x.shape[0] )
-
     for i in range( epoch ):
         batch_x, batch_y = get_batch( x, y, batch_size )
         for idx, (input_data, label) in enumerate(zip(batch_x, batch_y)): 
@@ -59,5 +63,4 @@ def train( epoch, tol, arch, eta, x, y, batch_size=100 ):
         if mean_error < tol: break
         print(i, "%.8f" % mean_error, end="\r" )
     print()
-
-    return nnet, weights
+    return weights
